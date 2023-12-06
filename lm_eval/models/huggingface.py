@@ -96,6 +96,8 @@ class HFLM(LM):
         bnb_4bit_compute_dtype: Optional[Union[str, torch.dtype]] = None,
         gptq: Optional[Union[bool, str]] = False,
         gptq_use_triton: Optional[bool] = False,
+        use_flash_attention_2: Optional[bool] = False,
+        use_optimum: Optional[bool] = False,
     ) -> None:
         super().__init__()
 
@@ -204,6 +206,7 @@ class HFLM(LM):
                 low_cpu_mem_usage=low_cpu_mem_usage,
                 trust_remote_code=trust_remote_code,
                 load_in_8bit=load_in_8bit,
+                use_flash_attention_2=use_flash_attention_2,
                 **model_kwargs,
             )
         else:
@@ -234,6 +237,10 @@ class HFLM(LM):
             )
 
         # forever after, access self._model through self.model property
+        if use_optimum:
+            self.model.to_bettertransformer()
+
+
         self.model.eval()
         self.model.tie_weights()
         if gpus <= 1 and not parallelize:
