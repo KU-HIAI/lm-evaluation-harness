@@ -199,6 +199,9 @@ class HFLM(LM):
                         model_kwargs["bnb_4bit_compute_dtype"] = utils.get_dtype(
                             bnb_4bit_compute_dtype
                         )
+
+                model_kwargs["use_flash_attention_2"] = use_flash_attention_2
+
             self._model = self.AUTO_MODEL_CLASS.from_pretrained(
                 pretrained,
                 revision=revision,
@@ -206,7 +209,6 @@ class HFLM(LM):
                 low_cpu_mem_usage=low_cpu_mem_usage,
                 trust_remote_code=trust_remote_code,
                 load_in_8bit=load_in_8bit,
-                use_flash_attention_2=use_flash_attention_2,
                 **model_kwargs,
             )
         else:
